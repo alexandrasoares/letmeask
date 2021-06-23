@@ -1,3 +1,4 @@
+import { useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import { auth, firebase } from '../services/firebase';
 
@@ -15,13 +16,9 @@ export function Home() {
     const history = useHistory();
 
     function handleCreateRoom() {
-        const provider = new firebase.auth.GoogleAuthProvider();
-
-        auth.signInWithPopup(provider).then(result => {
-            console.log(result);
-            history.push('/rooms/new');
-        })
+        history.push('/rooms/new');
     }
+
     return (
         <div id="page-auth">
             <aside>
