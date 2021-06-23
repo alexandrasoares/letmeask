@@ -1,9 +1,8 @@
 import { BrowserRouter, Route } from 'react-router-dom';
-import { createContext } from 'react';
+import { createContext, useState, useEffect } from 'react';
 
 import { Home } from "./pages/Home";
 import { NewRoom } from "./pages/NewRoom";
-import { useState } from 'react';
 import { auth, firebase } from './services/firebase';
 
 type User = {
@@ -14,7 +13,7 @@ type User = {
 
 type AuthContextType = {
   user: User | undefined;
-  signInWithGoogle: () => void;
+  signInWithGoogle: () => Promise<void>;
 }
 
 export const AuthContext = createContext({} as AuthContextType);
@@ -22,23 +21,40 @@ export const AuthContext = createContext({} as AuthContextType);
 function App() {
   const [user, setUser] = useState<User>();
 
-  function signInWithGoogle() {
+  useEffect(() => {
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        const { displayName, photoURL, uid } = user
+        if (!displayName || !photoURL) {
+          throw new Error('Missing information from Google Account');
+        }
+  
+        setUser({
+          id: uid,
+          name: displayName,
+          avatar: photoURL
+        });
+      }
+    })
+  }, [])
+
+  async function signInWithGoogle() {
     const provider = new firebase.auth.GoogleAuthProvider();
-        auth.signInWithPopup(provider).then(result => {
-            if (result.user) {
-              const { displayName, photoURL, uid } = result.user
+    const result = await auth.signInWithPopup(provider)
 
-              if (!displayName || !photoURL) {
-                throw new Error('Missing information from Google Account');
-              }
+    if (result.user) {
+      const { displayName, photoURL, uid } = result.user
 
-              setUser({
-                id: uid,
-                name: displayName,
-                avatar: photoURL
-              });
-            }
-        })
+      if (!displayName || !photoURL) {
+        throw new Error('Missing information from Google Account');
+      }
+
+      setUser({
+        id: uid,
+        name: displayName,
+        avatar: photoURL
+      });
+    }
   }
 
   return (

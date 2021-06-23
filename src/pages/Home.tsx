@@ -11,11 +11,16 @@ import googleIconImg from '../assets/images/google-icon.svg'
 import { Button } from '../components/Button';
 
 import '../styles/auth.scss'
+import { AuthContext } from '../App';
 
 export function Home() {
     const history = useHistory();
+    const { user, signInWithGoogle } = useContext(AuthContext);
 
-    function handleCreateRoom() {
+    async function handleCreateRoom() {
+        if (!user) {
+            await signInWithGoogle()
+        }
         history.push('/rooms/new');
     }
 
