@@ -10,6 +10,11 @@ import { Button } from '../components/Button';
 import '../styles/auth.scss'
 
 export function NewRoom() {
+
+    async function handleCreateRoom() {
+
+    }
+
     return (
         <div id="page-auth">
             <aside>
@@ -30,7 +35,7 @@ export function NewRoom() {
                           Criar uma nova sala  
                     </h2>
 
-                    <form action="">
+                    <form onSubmit={handleCreateRoom}>
                         <input 
                             type="text" 
                             placeholder="Nome da sala"
