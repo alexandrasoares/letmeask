@@ -36,7 +36,7 @@ export function Home() {
 
         const roomRef = await database.ref(`rooms/${roomCode}`).get();
 
-        // Válida se a sala existe, se não existe ele exibe um alerta com a mensagem abaixo.
+        // Valída se a sala existe, se não existe ele exibe um alerta com a mensagem abaixo.
         if (!roomRef.exists()) {
             alert('Room does not exists.');
             return;
