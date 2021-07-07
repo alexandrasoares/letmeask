@@ -1,4 +1,7 @@
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
+import { FormEvent, useState } from 'react';
+import { database } from '../services/firebase';
+import { useAuth } from '../hooks/useAuth';
 
 import illustrationImg from '../assets/images/illustration.svg'
 import logoImg from '../assets/images/logo.svg'
@@ -10,9 +13,26 @@ import { Button } from '../components/Button';
 import '../styles/auth.scss'
 
 export function NewRoom() {
+    const { user } = useAuth()
+    const [newRom, setNewRom] = useState('');
+    const history = useHistory();
+ 
+    // Cria a sala quando o submit é clicado
+    async function handleCreateRoom(event: FormEvent) {
+        // Previnir o comportamento padrão do HTML de clicar em um botão submit e fazer um redirecionamento do forms.
+        event.preventDefault();
+        
+        if (newRom.trim() === '') {
+            return;
+        }
 
-    async function handleCreateRoom() {
+        const roomRef = database.ref('rooms');
+        const firebaseRoom = await roomRef.push({
+            title: newRom,
+            authorId: user?.id,
+        })
 
+        history.push(`/rooms/${firebaseRoom.key}`)
     }
 
     return (
@@ -39,6 +59,8 @@ export function NewRoom() {
                         <input 
                             type="text" 
                             placeholder="Nome da sala"
+                            onChange={event => setNewRom(event.target.value)}
+                            value={newRom}
                         />
                         <Button type="submit">
                             Criar sala
