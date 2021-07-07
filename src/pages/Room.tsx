@@ -6,6 +6,7 @@ import logoImg from '../assets/images/logo.svg'
 
 // STYLE
 import '../styles/pages-style/room.scss'
+import { RoomCode } from '../components/RoomCode';
 
 export function Room() {
     return (
@@ -13,7 +14,7 @@ export function Room() {
             <header>
                 <div className="content">
                     <img src={logoImg} alt="" />
-                    <div>código</div>        
+                    <RoomCode/>        
                 </div>
             </header>
 
